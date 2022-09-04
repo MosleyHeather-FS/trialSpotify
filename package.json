@@ -1,0 +1,26 @@
+{
+  "name": "spotify-demo",
+  "version": "1.0.0",
+  "engines": {
+    "node": "16.14.2"
+},
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MosleyHeather-FS/Spotify-Demo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MosleyHeather-FS/Spotify-Demo/issues"
+  },
+  "homepage": "https://github.com/MosleyHeather-FS/Spotify-Demo#readme",
+  "dependencies": {
+    "spotify-web-api-node": "^5.0.2"
+  }
+}
