@@ -3,10 +3,7 @@
 #### Spotify Account
 1. You need to have an account with Spotify. If you don't you can create one on their website.
 2. Once you have an account with Spotify go to [Developers for Spotify](https://developer.spotify.com), click the Dashboard tab to login, and agree to the terms of service.
-3. Lastily, create an app and look over their documentation.
-
-#### Database Storage
-You can do this with whatever database you want. Personally, I recommend MongoDB Compass, but you can use any of your choosing.  
+3. Lastily, create an app and look over their documentation. 
 
 ### Requirements
 You'll need these for your app to run properly:
