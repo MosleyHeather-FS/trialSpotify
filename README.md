@@ -1,3 +1,5 @@
+# Project Overview
+This project is a Spotify Demo that connects to the spotify database through the use of the Spotify Web API. The purpose of this project is to be able to access the songs and albums of artists on Spotify after a spotify account user logs in.
 ## Getting Started
 ### Pre-Requisites
 #### Spotify Account
