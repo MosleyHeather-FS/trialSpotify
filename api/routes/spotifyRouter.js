@@ -1,20 +1,42 @@
 const express = require('express');
 
+const clientId = process.env.CLIENT_ID
+const clientSecret = process.env.CLIENT_SECRET
+const redirectUri = process.env.REDIRECT_URI
+
 const router = express.Router();
 
-const getAlbums = async (req, res, next) => {
-    let album 
-    try {
-        album = await Album.findById(req.params.id)
-        if(album === null){
-            return res.status(404).json({ message: message.notFound})
-        }
-    } catch(error) {
-        return res.status(500).json({ message: error.message })
-    }
-    res.album = album;
-    next();
-}
+
+
+// get user profile
+router.get("/me", async(req, res, next) => {
+    await fetch("https://api.spotify.com/v1/me")
+    .then( response => response.json())
+    .then(data => {
+        
+        res.json(data);
+    })
+})
+
+// get albums
+router.get("/me/albums", async(req, res, next) => {
+    await fetch("https://api.spotify.com/v1/me/albums")
+    .then( response => response.json())
+    .then(data => {
+        
+        res.json(data);
+    })
+})
+
+// get currently playing track
+router.get("/me/player/currently-playing", async(req, res, next) => {
+    await fetch("https://api.spotify.com/v1/me/player/currently-playing")
+    .then( response => response.json())
+    .then(data => {
+        
+        res.json(data);
+    })
+})
 
 // get all
 router.get('/', async (req, res) => {
