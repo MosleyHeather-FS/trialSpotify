@@ -1,9 +1,7 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useStateProvider } from "../utils/stateProvider";
-import Navbar from "../components/Navbar";
-import Sidebar from "../components/Sidebar";
-import Footer from "../components/Footer";
+
 import { reducerCases } from "../utils/constants";
 
 export default function Homepage() {
@@ -31,15 +29,15 @@ export default function Homepage() {
     <body style={styles.body}> 
     
       <div style={styles.sidebar}>
-        <Sidebar />
+   
       </div>
-      <h1>Spotify</h1>
+      <h1>Trial Spotify</h1>
       <div style={styles.nav}>
-        <Navbar />
+      
       </div>
      
       <div style={styles.footer}>
-        <Footer />
+
       </div>
     </body>
   );
