@@ -1,15 +1,58 @@
 const express = require('express');
+require('dotenv').config();
+const axios = require('axios')
 
 const clientId = process.env.CLIENT_ID
 const clientSecret = process.env.CLIENT_SECRET
 const redirectUri = process.env.REDIRECT_URI
 
-const Token = require('../models/tokenModel');
+const token = require('../models/tokenModel');
 
 const router = express.Router();
 
-//const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
-//const token = `https://accounts.spotify.com/api/token`;
+// router.get( (code, grant_type, token) => {
+//     let data = (grant_type === "refresh_token") 
+//       ? qs.stringify({ refresh_token: code, grant_type })
+//       : qs.stringify({ code, grant_type, redirectUri }) 
+//     return axios({
+//         method: 'POST',
+//         url: 'https://accounts.spotify.com/api/token', 
+//         data,
+//         headers: {
+//           'Authorization': basicAuth,
+//           'Content-Type': 'application/x-www-form-urlencoded'
+//         }
+//       }).then(({ data }) => {
+//         data.expires_in = new Date().getTime() + data.expires_in
+//         token.update( data )
+//         return token.save()
+//       }).catch((error) => { return false })
+//   })
+
+// const status = async (req, res, next) => {
+//     const valid = (req.Token ) Token.findOne({});
+// }
+
+// authorize user login
+router.get('/login', async(req, res, next) => {
+    const state = generateRandomString(16);
+    const scope = [
+        'user-read-email', 
+        'user-read-private', 
+        'user-modify-playback-state', 
+        'user-read-playback-state', 
+        'user-read-currently-playing',
+    ];
+
+    res.redirect('https://accounts.spotify.com/authorize?' + 
+    querystring.stringify({
+        response_type: 'code',
+        client_id: clientId,
+        scope: scope,
+        redirect_uri: redirectUri,
+        state: state
+    }))
+})
 
 router.get('/refresh_token', function(req, res) {
 
@@ -34,46 +77,33 @@ router.get('/refresh_token', function(req, res) {
     });
   });
 
-// authorize user login
-router.get('/login', async(req, res, next) => {
-    const state = generateRandomString(16);
-    const scope = 'user-read-private user-read-email';
-
-    res.redirect('https://accounts.spotify.com/authorize?' + 
-    querystring.stringify({
-        response_type: 'code',
-        client_id: clientId,
-        scope: scope,
-        redirect_uri: redirectUri,
-        state: state
-    }))
-})
-
-router.get('/callback', function(req, res) {
-
-    const code = req.query.code || null;
-    const state = req.query.state || null;
-  
-    if (state === null) {
-      res.redirect('/#' +
-        querystring.stringify({
-          error: 'state_mismatch'
-        }));
-    } else {
-      const token = {
-        url: 'https://accounts.spotify.com/api/token',
-        form: {
-          code: code,
-          redirect_uri: redirect_uri,
-          grant_type: 'authorization_code'
-        },
-        headers: {
-          'Authorization': 'Basic ' + (new Buffer.from(client_id + ':' + client_secret).toString('base64'))
-        },
-        json: true
-      };
-    }
-  });
+router.get('/callback', async (req, res) => {
+        const token = await Token.findOne({});
+        const {code} = req.query;
+        const clientId = process.env.CLIENT_ID
+        const clientSecret = process.env.CLIENT_SECRET
+        const redirectUri = process.env.REDIRECT_URI
+        const grant_type = 'authorization_code';
+    
+        const basicHeader = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+        const {data} = await axios.post('https://accounts.spotify.com/api/token', querystring.stringify({
+            grant_type,
+            code,
+            redirectUri,
+        }), {
+            headers: {
+                Authorization: `Basic ${basicHeader}`,
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+    
+        const sessionJWTObject = {
+            token: data.access_token,
+        };
+    
+        req.session.jwt = jwt.sign(sessionJWTObject, process.env.JWT_SECRET_KEY)
+        return res.redirect('/');
+    });
 
 // get user profile
 router.get("/me", async(req, res, next) => {
@@ -132,4 +162,4 @@ router.get("/me/player/currently-playing", async(req, res, next) => {
     })
 })
 
-module.exports = router;
+module.exports = router;   

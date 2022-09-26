@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "engines": {
     "node": "16.14.2"
-},
+  },
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/MosleyHeather-FS/Spotify-Demo#readme",
   "dependencies": {
+    "dotenv": "^16.0.2",
     "spotify-web-api-node": "^5.0.2"
   }
 }
