@@ -7,6 +7,19 @@ export default function Profile() {
   const [artists, setArtists] = useState([]);
   const [token, setToken] = useState('')
 
+  useEffect(() => {
+    const hash = window.location.hash
+    let token = window.localStorage.getItem('token')
+
+    if (!token && hash) {
+      token = hash.substring(1).split('&')[0].split('=')[1]
+
+      window.location.hash = ''
+      window.localStorage.setItem('token', token)
+    }
+    setToken(token)
+  }, [])
+
   const searchArtists = async (e) => {
     e.preventDefault();
 
@@ -43,18 +56,7 @@ export default function Profile() {
       : <h2>You are not logged in. To view this page please login.</h2>
      }
      {renderArtists()}
-
-      <div style={styles.sidebar}>
-   
-      </div>
       <h1>Homepage</h1>
-      <div style={styles.nav}>
-      
-      </div>
-     
-      <div style={styles.footer}>
-
-      </div>
     </section>
   );
 }

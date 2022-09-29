@@ -10,29 +10,6 @@ const token = require('../models/tokenModel')
 
 const router = express.Router()
 
-// router.get( (code, grant_type, token) => {
-//     let data = (grant_type === "refresh_token")
-//       ? qs.stringify({ refresh_token: code, grant_type })
-//       : qs.stringify({ code, grant_type, redirectUri })
-//     return axios({
-//         method: 'POST',
-//         url: 'https://accounts.spotify.com/api/token',
-//         data,
-//         headers: {
-//           'Authorization': basicAuth,
-//           'Content-Type': 'application/x-www-form-urlencoded'
-//         }
-//       }).then(({ data }) => {
-//         data.expires_in = new Date().getTime() + data.expires_in
-//         token.update( data )
-//         return token.save()
-//       }).catch((error) => { return false })
-//   })
-
-// const status = async (req, res, next) => {
-//     const valid = (req.Token ) Token.findOne({});
-// }
-
 router.get('/refresh_token', function (req, res) {
   const refresh_token = req.query.refresh_token
   const token = {
@@ -90,11 +67,23 @@ router.get('/callback', async (req, res) => {
   }
 
   req.session.jwt = jwt.sign(sessionJWTObject, process.env.JWT_SECRET_KEY)
-  return res.redirect('/')
+  return res.redirect('/me')
 })
+
+const generateRandomString = length => {
+  let text = '';
+  const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890';
+  for (let i =0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length))
+  }
+  return text;
+}
+const stateKey = 'spotify_auth_state';
+
 // authorize user login
 router.get('/login', async (req, res, next) => {
   const state = generateRandomString(16)
+  res.cookie(stateKey, state)
   const scope = [
     'user-read-email',
     'user-read-private',
