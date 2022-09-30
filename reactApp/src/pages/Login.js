@@ -8,10 +8,6 @@ export default function Login() {
   const apiUrl = 'https://accounts.spotify.com/authorize'
   const responseType = 'token'
 
-  const navigate = useNavigate();
-  const spotifyPath = "/spotify/v1"
-  const valid = "/valid"
-
   const [token, setToken] = useState('')
 
   useEffect(() => {
@@ -27,19 +23,8 @@ export default function Login() {
     setToken(token)
   }, [])
 
-//   useEffect(() => {
-//     fetch(`http://localhost:3000${spotifyPath}${valid}`)
-//     .then(data=>data.url==="http://localhost:3000/" ? navigate("/profile") : navigate("/"))
-//     .catch(error => console.log(error))
-//   })
-
   const login = () => {
     window.location.href = `${apiUrl}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}`
-  }
-
-  const logout = () => {
-    setToken('')
-    window.localStorage.removeItem('token')
   }
 
   
@@ -55,9 +40,6 @@ export default function Login() {
       </div>
       <button style={styles.login} onClick={login}>
         Connect to Spotify
-      </button>
-      <button style={styles.logout} onClick={logout}>
-        Logout
       </button>
     </section>
   )
@@ -80,9 +62,6 @@ const styles = {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  logout: {
-    leftMargin: '200px',
   },
   login: {},
   img: {
