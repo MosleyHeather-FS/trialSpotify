@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { getCurrentUserProfile } from "./utils/UserProfile";
 
 export default function Profile() {
-  
   const [token, setToken] = useState("");
   const [search, setSearch] = useState("");
   const [artists, setArtists] = useState([]);
+  const [playlists, setPlaylists] = useState([]);
+  const [profile, setProfile] = useState("");
+  
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -21,13 +24,31 @@ export default function Profile() {
     setToken(token);
   }, []);
 
+  // useEffect(() => {
+  //   setToken(token);
+  //   const fetchUser = async () => {
+  //     try {
+  //       const { data } = await axios.get("https://api.spotify.com/v1/users", {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
+  //       setProfile(data);
+  //       console.log(data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchUser();
+  // }, []);
+
   const searchArtists = async (e) => {
     e.preventDefault();
 
     const { data } = await axios.get("https://api.spotify.com/v1/search", {
       headers: {
-        Accept: 'application/json',
-        Authorization: `Bearer ${token}`
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
       },
       params: {
         query: search,
@@ -35,9 +56,8 @@ export default function Profile() {
         limit: 20,
       },
     });
-    
+
     setArtists(data.artists.items);
-    
   };
 
   const renderArtists = () => {
@@ -53,15 +73,27 @@ export default function Profile() {
     ));
   };
 
+  const getPlaylists = () => {
+    axios.get("https://api.spotify.com/v1/me/playlists", {
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      }, 
+    })
+    .then((response) => {
+      setPlaylists(response.playlists);
+    });
+  };
+
   const logout = () => {
-    setToken('')
-    window.localStorage.removeItem('token')
-  }
+    setToken("");
+    window.localStorage.removeItem("token");
+  };
 
   return (
     <section style={styles.page}>
       <nav style={styles.nav}>
-      <img
+        <img
           style={styles.img}
           src="https://www.freepnglogos.com/uploads/spotify-logo-png/spotify-icon-pink-logo-33.png"
         />
@@ -72,17 +104,22 @@ export default function Profile() {
           </form>
         ) : (
           <div>
-            <h2>You are not logged in. To view this page please login.</h2>
+            <h2 style={styles.loggedOut}>You are not logged in. To view this page please login.</h2>
             <Link to="/login">Login</Link>
           </div>
         )}
+        {/* {profile && (
+          <div>
+            <h1>{profile.display_name}</h1>
+            <p>{profile.followers.total} Followers</p>
+          </div>
+        )} */}
+        <button onClick={getPlaylists()}>Get Playlist</button>
         <button style={styles.logout} onClick={logout}>
-        Logout
-      </button>
+          Logout
+        </button>
       </nav>
-      <div style={styles.body}>
-        {renderArtists()}
-        </div>
+      <div style={styles.body}>{renderArtists()}</div>
     </section>
   );
 }
@@ -92,34 +129,37 @@ const styles = {
     backgroundColor: "#13072a",
     height: "100vh",
     width: "100vw",
-    overflow: 'scroll',
+    overflow: "scroll",
     alignItems: "center",
     justifyContent: "center",
   },
   body: {
-    display: 'grid',
-    gridTemplateColumns: 'auto auto auto auto',
-    
-    color: 'white'
+    display: "grid",
+    gridTemplateColumns: "auto auto auto auto",
+
+    color: "white",
   },
   nav: {
-    display: 'flex',
-    flexDirection: 'row',
+    display: "flex",
+    flexDirection: "row",
   },
   img: {
-    width: '2%',
-    marginLeft: '10px',
-    marginTop: '10px',
+    width: "2%",
+    marginLeft: "10px",
+    marginTop: "10px",
   },
   artistImg: {
-    width: '15%',
-    color: 'white'
+    width: "15%",
+    color: "white",
   },
   search: {
-    marginLeft: '30%',
-    marginTop: '10px',
+    marginLeft: "30%",
+    marginTop: "10px",
   },
   logout: {
-    marginLeft: '20px',
+    marginLeft: "20px",
   },
+  loggedOut: {
+    color: 'white'
+  }
 };

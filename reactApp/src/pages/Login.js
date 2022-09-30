@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import {useNavigate} from 'react-router-dom';
-import axios from 'axios';
 
 export default function Login() {
   const clientId = '56d533ea88f14cd294c7a212424cb16f'
